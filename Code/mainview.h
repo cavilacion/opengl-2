@@ -54,26 +54,43 @@ protected:
     void wheelEvent(QWheelEvent *ev);
 
     // Matrices
-    QMatrix4x4 cubeMatrix;
-    QMatrix4x4 mPyramid;
-    QMatrix4x4 sphereMatrix;
+    QMatrix4x4 modelMatrix;
     QMatrix4x4 projectionMatrix;
     QMatrix4x4 rotationMatrix;
     QMatrix4x4 scalingMatrix;
+
+    QMatrix3x3 normalMatrix;
 
 private slots:
     void onMessageLogged( QOpenGLDebugMessage Message );
 
 private:
 
-    GLuint vaoCube;
-    GLuint vaoPyramid;    
-    GLuint vaoSphere;
-    GLuint bufferId[3];
+    GLuint vaoModel;
+    GLuint bufferId[1];
 
     GLint locations;
     GLint projectionLocation;
     GLint transformation;
+    GLint normalTransform;
+
+    void createShaderProgram();
+    Vertex createVertex(float x, float y, float z, float i, float j, float k);
+
+    Vertex *modelVertices;
+    int modelSize;
+
+    /* OLD CODE FROM PART 1 *
+
+    QMatrix4x4 cubeMatrix;
+    QMatrix4x4 mPyramid;
+
+    GLuint vaoCube;
+    GLuint vaoPyramid;
+
+    Square createSquare(Vertex v1, Vertex v2, Vertex v3, Vertex v4, Vertex v5, Vertex v6);
+
+    Triangle createTriangle(Vertex v1, Vertex v2, Vertex v3);
 
     void createCube(float x1, float y1, float z1,
                     float x2, float y2, float z2,
@@ -89,17 +106,8 @@ private:
                     float x4, float y4, float z4,
                     float x5, float y5, float z5 );
 
-    void createShaderProgram();
-    Vertex createVertex(float x, float y, float z, float r, float g, float b);
-    Square createSquare(Vertex v1, Vertex v2, Vertex v3, Vertex v4, Vertex v5, Vertex v6);
-
-    Triangle createTriangle(Vertex v1, Vertex v2, Vertex v3);
-
     Cube cube;
-    Pyramid pyr;
-
-    Vertex sphereVertices[2280];
-    int sphereLength;
+    Pyramid pyr;*/
 };
 
 #endif // MAINVIEW_H
