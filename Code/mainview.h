@@ -21,7 +21,11 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     QOpenGLDebugLogger *debugLogger;
     QTimer timer; // timer used for animation
 
-    QOpenGLShaderProgram shaderProgram;
+    // Dit is volgend mij nodig, maar weet ik niet zeker
+    QOpenGLShaderProgram currentShaderProgram;
+    QOpenGLShaderProgram normalShaderProgram;
+    QOpenGLShaderProgram phongShaderProgram;
+    QOpenGLShaderProgram gouraudShaderProgram;
 
 public:
     enum ShadingMode : GLuint
