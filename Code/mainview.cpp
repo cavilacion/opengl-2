@@ -192,10 +192,29 @@ void MainView::createShaderProgram()
                                            ":/shaders/fragshader_phong.glsl");
     phongShaderProgram.link();
 
+    // normal
     locations = normalShaderProgram.uniformLocation("modelTransform");
     projectionLocation = normalShaderProgram.uniformLocation("projectionTransform");
     transformation = normalShaderProgram.uniformLocation("transformation");
     normalTransform = normalShaderProgram.uniformLocation("normalTransform");
+
+    // gouraud
+    gouraudLocations = gouraudShaderProgram.uniformLocation("modelTransform");
+    gouraudProjectionLocation = gouraudShaderProgram.uniformLocation("projectionTransform");
+    gouraudTransformation = gouraudShaderProgram.uniformLocation("transformation");
+    gouraudNormalTransform = gouraudShaderProgram.uniformLocation("normalTransform");
+
+    // phong
+    phongLocations = phongShaderProgram.uniformLocation("modelTransform");
+    phongProjectionLocation = phongShaderProgram.uniformLocation("projectionTransform");
+    phongTransformation = phongShaderProgram.uniformLocation("transformation");
+    phongNormalTransform = phongShaderProgram.uniformLocation("normalTransform");
+
+    // current
+    currentLocations = locations;
+    currentProjectionLocation = projectionLocation;
+    currentTransformation = transformation;
+    currentNormalTransform = normalTransform;
 }
 
 // --- OpenGL drawing
@@ -210,18 +229,22 @@ void MainView::paintGL() {
     // Clear the screen before rendering
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    normalShaderProgram.bind();
+    switch(currentShading){
+        case MainView::PHONG: phongShaderProgram.bind(); break;
+        case MainView::GOURAUD: gouraudShaderProgram.bind(); break;
+        default: normalShaderProgram.bind(); break;
+    }
 
-    glUniformMatrix4fv(projectionLocation,1,false,projectionMatrix.data());
+    glUniformMatrix4fv(currentProjectionLocation,1,false,projectionMatrix.data());
 
     QMatrix4x4 transformationMatrix = rotationMatrix * scalingMatrix;
 
-    glUniformMatrix4fv(transformation,1,false,transformationMatrix.data());
+    glUniformMatrix4fv(currentTransformation,1,false,transformationMatrix.data());
 
-    glUniformMatrix3fv(normalTransform,1,false,normalMatrix.data());
+    glUniformMatrix3fv(currentNormalTransform,1,false,normalMatrix.data());
 
     // Draw model
-    glUniformMatrix4fv(locations,1,false,modelMatrix.data());
+    glUniformMatrix4fv(currentLocations,1,false,modelMatrix.data());
     glBindVertexArray(vaoModel);
     glDrawArrays(GL_TRIANGLES, 0, modelSize);
 
@@ -288,15 +311,28 @@ void MainView::setScale(int scale)
 
 void MainView::setShadingMode(ShadingMode shading)
 {
+    qDebug() << "Shading changed to " << shading;
     switch(shading){
         case MainView::GOURAUD:
-            currentShaderProgram. = gouraudShaderProgram; // toewijzing kan niet
+            currentShading = MainView::GOURAUD;
+            currentLocations = gouraudLocations;
+            currentNormalTransform = gouraudNormalTransform;
+            currentProjectionLocation = gouraudProjectionLocation;
+            currentTransformation = gouraudTransformation;
             break;
         case MainView::PHONG:
-            currentShaderProgram = phongShaderProgram;
+            currentShading = MainView::PHONG;
+            currentLocations = phongLocations;
+            currentNormalTransform = phongNormalTransform;
+            currentProjectionLocation = phongProjectionLocation;
+            currentTransformation = phongTransformation;
             break;
         default:
-            currentShaderProgram = normalShaderProgram;
+            currentShading = MainView::NORMAL;
+            currentLocations = locations;
+            currentNormalTransform = normalTransform;
+            currentProjectionLocation = projectionLocation;
+            currentTransformation = transformation;
     }
     update();
 }

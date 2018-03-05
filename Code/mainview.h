@@ -33,6 +33,8 @@ public:
         PHONG = 0, NORMAL, GOURAUD
     };
 
+    ShadingMode currentShading = MainView::NORMAL;
+
     MainView(QWidget *parent = 0);
     ~MainView();
 
@@ -73,10 +75,29 @@ private:
     GLuint vaoModel;
     GLuint bufferId[1];
 
+    // normal
     GLint locations;
     GLint projectionLocation;
     GLint transformation;
     GLint normalTransform;
+
+    // gouraud
+    GLint gouraudLocations;
+    GLint gouraudProjectionLocation;
+    GLint gouraudTransformation;
+    GLint gouraudNormalTransform;
+
+    // phong
+    GLint phongLocations;
+    GLint phongProjectionLocation;
+    GLint phongTransformation;
+    GLint phongNormalTransform;
+
+    // current
+    GLint currentLocations;
+    GLint currentProjectionLocation;
+    GLint currentTransformation;
+    GLint currentNormalTransform;
 
     void createShaderProgram();
     Vertex createVertex(float x, float y, float z, float i, float j, float k);
