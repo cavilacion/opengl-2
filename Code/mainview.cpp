@@ -197,24 +197,29 @@ void MainView::createShaderProgram()
     projectionLocation = normalShaderProgram.uniformLocation("projectionTransform");
     transformation = normalShaderProgram.uniformLocation("transformation");
     normalTransform = normalShaderProgram.uniformLocation("normalTransform");
+    normalLightPosition = normalShaderProgram.uniformLocation("lightPos");
 
     // gouraud
     gouraudLocations = gouraudShaderProgram.uniformLocation("modelTransform");
     gouraudProjectionLocation = gouraudShaderProgram.uniformLocation("projectionTransform");
     gouraudTransformation = gouraudShaderProgram.uniformLocation("transformation");
     gouraudNormalTransform = gouraudShaderProgram.uniformLocation("normalTransform");
+    gouraudLightPosition = gouraudShaderProgram.uniformLocation("lightPos");
 
     // phong
     phongLocations = phongShaderProgram.uniformLocation("modelTransform");
     phongProjectionLocation = phongShaderProgram.uniformLocation("projectionTransform");
     phongTransformation = phongShaderProgram.uniformLocation("transformation");
     phongNormalTransform = phongShaderProgram.uniformLocation("normalTransform");
+    phongLightPosition = phongShaderProgram.uniformLocation("lightPos");
 
     // current
     currentLocations = locations;
     currentProjectionLocation = projectionLocation;
     currentTransformation = transformation;
     currentNormalTransform = normalTransform;
+    currentLightPosition = normalLightPosition;
+
 }
 
 // --- OpenGL drawing
@@ -245,6 +250,7 @@ void MainView::paintGL() {
 
     // Draw model
     glUniformMatrix4fv(currentLocations,1,false,modelMatrix.data());
+    glUniform4fv(currentLightPosition,1,lightPosition);
     glBindVertexArray(vaoModel);
     glDrawArrays(GL_TRIANGLES, 0, modelSize);
 
@@ -319,6 +325,7 @@ void MainView::setShadingMode(ShadingMode shading)
             currentNormalTransform = gouraudNormalTransform;
             currentProjectionLocation = gouraudProjectionLocation;
             currentTransformation = gouraudTransformation;
+            currentLightPosition = gouraudLightPosition;
             break;
         case MainView::PHONG:
             currentShading = MainView::PHONG;
@@ -326,6 +333,7 @@ void MainView::setShadingMode(ShadingMode shading)
             currentNormalTransform = phongNormalTransform;
             currentProjectionLocation = phongProjectionLocation;
             currentTransformation = phongTransformation;
+            currentLightPosition = phongLightPosition;
             break;
         default:
             currentShading = MainView::NORMAL;
@@ -333,6 +341,7 @@ void MainView::setShadingMode(ShadingMode shading)
             currentNormalTransform = normalTransform;
             currentProjectionLocation = projectionLocation;
             currentTransformation = transformation;
+            currentLightPosition = normalLightPosition;
     }
     update();
 }

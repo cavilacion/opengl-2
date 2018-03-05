@@ -13,6 +13,8 @@ uniform mat4 projectionTransform;
 uniform mat4 transformation;
 uniform mat3 normalTransform;
 
+uniform vec3 lightPos;
+
 // Specify the output of the vertex stage
 out vec3 vertNormal;
 

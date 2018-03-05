@@ -67,6 +67,8 @@ protected:
 
     QMatrix3x3 normalMatrix;
 
+    float lightPosition[4] = {10.0,10.0,10.0,0.0};
+
 private slots:
     void onMessageLogged( QOpenGLDebugMessage Message );
 
@@ -80,24 +82,28 @@ private:
     GLint projectionLocation;
     GLint transformation;
     GLint normalTransform;
+    GLint normalLightPosition;
 
     // gouraud
     GLint gouraudLocations;
     GLint gouraudProjectionLocation;
     GLint gouraudTransformation;
     GLint gouraudNormalTransform;
+    GLint gouraudLightPosition;
 
     // phong
     GLint phongLocations;
     GLint phongProjectionLocation;
     GLint phongTransformation;
     GLint phongNormalTransform;
+    GLint phongLightPosition;
 
     // current
     GLint currentLocations;
     GLint currentProjectionLocation;
     GLint currentTransformation;
     GLint currentNormalTransform;
+    GLint currentLightPosition;
 
     void createShaderProgram();
     Vertex createVertex(float x, float y, float z, float i, float j, float k);
