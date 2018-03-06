@@ -5,12 +5,15 @@
 
 // Specify the inputs to the fragment shader
 // These must have the same type and name!
-varying vec3 vertNormal;
-varying vec3 lightVector;
+in vec3 vertNormal;
+in vec3 lightVector;
+in vec2 vertUV;
 
 // Specify the Uniforms of the fragment shaders
 // uniform vec3 lightPosition; // for example
 uniform vec4 lightPos;
+
+uniform sampler2D samplerUniform;
 
 // Specify the output of the fragment shader
 // Usually a vec4 describing a color (Red, Green, Blue, Alpha/Transparency)
@@ -41,8 +44,10 @@ void main()
     vec4 Ispec = specular * pow(max(dot(R,E),0.0),0.3*shininess);
     Ispec = clamp(Ispec, 0.0, 1.0);
 
+    vec4 textureColor = texture2D(samplerUniform, vertUV);
+
     // write Total Color:
-    vec4 color = vec4(0.7,0.5,0.1,0.0);
+    vec4 color = textureColor;//vec4(0.7,0.5,0.1,0.0);
     fColor = color + Iamb + Idiff + Ispec;
 
 }

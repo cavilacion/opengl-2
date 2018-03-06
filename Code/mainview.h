@@ -27,6 +27,7 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     QOpenGLShaderProgram phongShaderProgram;
     QOpenGLShaderProgram gouraudShaderProgram;
 
+
 public:
     enum ShadingMode : GLuint
     {
@@ -43,6 +44,10 @@ public:
     void setScale(int scale);
     void setShadingMode(ShadingMode shading);
     QVector<quint8> imageToBytes(QImage image);
+    void loadTexture(QString file, GLuint *texturePtr);
+
+    GLuint tex;
+
 
 protected:
     void initializeGL();
@@ -76,6 +81,7 @@ private slots:
 private:
 
     GLuint vaoModel;
+    unsigned numverts;
     GLuint bufferId[1];
     GLuint texture;
 
@@ -85,6 +91,7 @@ private:
     GLint transformation;
     GLint normalTransform;
     GLint normalLightPosition;
+    GLint normalTextureColor;
 
     // gouraud
     GLint gouraudLocations;
@@ -92,6 +99,7 @@ private:
     GLint gouraudTransformation;
     GLint gouraudNormalTransform;
     GLint gouraudLightPosition;
+    GLint gouraudTextureColor;
 
     // phong
     GLint phongLocations;
@@ -99,6 +107,7 @@ private:
     GLint phongTransformation;
     GLint phongNormalTransform;
     GLint phongLightPosition;
+    GLint phongTextureColor;
 
     // current
     GLint currentLocations;
@@ -106,6 +115,7 @@ private:
     GLint currentTransformation;
     GLint currentNormalTransform;
     GLint currentLightPosition;
+    GLint currentTextureColor;
 
     void createShaderProgram();
     Vertex createVertex(float x, float y, float z, float i, float j, float k);

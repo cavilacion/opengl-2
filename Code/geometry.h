@@ -11,6 +11,10 @@ struct Vertex {
     float i;
     float j;
     float k;
+
+    // texture
+    float u;
+    float v;
 };
 
 /* Square consists of three triangles, so 6 vertices

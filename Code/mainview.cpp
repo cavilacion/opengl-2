@@ -20,25 +20,11 @@ MainView::MainView(QWidget *parent) : QOpenGLWidget(parent) {
     rotationMatrix.setToIdentity();
     normalMatrix.setToIdentity();
 
-    /* load obj file and initialize model */
-    Model *model = new Model(":/models/cat.obj");
-    QVector<QVector3D> loadedVertices = model->getVertices();
-    QVector<QVector3D> modelNormals = model->getNormals();
-    modelSize = loadedVertices.length();
-    modelVertices = (Vertex*)malloc (modelSize*sizeof (Vertex));
-    for(int i = 0; i < modelSize; i++){
-        modelVertices[i] = createVertex(loadedVertices[i].x(),
-                                         loadedVertices[i].y(),
-                                         loadedVertices[i].z(),
-                                         modelNormals[i].x(),
-                                         modelNormals[i].y(),
-                                         modelNormals[i].z()
-                                         );
-    }
-
     modelMatrix.translate(0,-2,-10);
     modelMatrix.scale(10.0f);
-    setShadingMode (MainView::PHONG);
+    setShadingMode (MainView::NORMAL);
+
+
 
     /* OLD CODE FROM PART 1
     // Create Cube
@@ -79,6 +65,7 @@ MainView::~MainView() {
 
     glDeleteBuffers(1,bufferId);
     glDeleteVertexArrays(1,&vaoModel);
+    glDeleteTextures(1, &tex);
 }
 
 // --- OpenGL initialization
@@ -123,17 +110,27 @@ void MainView::initializeGL() {
 
     glGenBuffers(1, bufferId);
     glGenVertexArrays(1, &vaoModel);
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    //glTexParameteri(GL_TEXTURE_2D, )
+
     glBindVertexArray(vaoModel);
     glBindBuffer(GL_ARRAY_BUFFER, bufferId[0]);
-    glBufferData(GL_ARRAY_BUFFER, modelSize * sizeof(Vertex), modelVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),0); // point
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(GLvoid*)(sizeof(float)*3)); // normal
+
+    Model cat(":/models/cat.obj");
+    numverts = cat.getNumTriangles() * 3;
+    QVector<float> data = cat.getVNTInterleaved();
+
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    glBufferData(GL_ARRAY_BUFFER, numverts * sizeof(Vertex), data.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),0); // point
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(GLvoid*)(sizeof(float)*3)); // normal
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,sizeof(Vertex),(GLvoid*)(sizeof(float)*6)); // texture
+
     glBindBuffer (GL_ARRAY_BUFFER,0);
+
+    loadTexture(":/textures/cat_diff.png", &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
 
 
     /*
@@ -202,6 +199,7 @@ void MainView::createShaderProgram()
     transformation = normalShaderProgram.uniformLocation("transformation");
     normalTransform = normalShaderProgram.uniformLocation("normalTransform");
     normalLightPosition = normalShaderProgram.uniformLocation("lightPos");
+    normalTextureColor = normalShaderProgram.uniformLocation("samplerUniform");
 
     // gouraud
     gouraudLocations = gouraudShaderProgram.uniformLocation("modelTransform");
@@ -209,6 +207,7 @@ void MainView::createShaderProgram()
     gouraudTransformation = gouraudShaderProgram.uniformLocation("transformation");
     gouraudNormalTransform = gouraudShaderProgram.uniformLocation("normalTransform");
     gouraudLightPosition = gouraudShaderProgram.uniformLocation("lightPos");
+    gouraudTextureColor = gouraudShaderProgram.uniformLocation("samplerUniform");
 
     // phong
     phongLocations = phongShaderProgram.uniformLocation("modelTransform");
@@ -216,6 +215,7 @@ void MainView::createShaderProgram()
     phongTransformation = phongShaderProgram.uniformLocation("transformation");
     phongNormalTransform = phongShaderProgram.uniformLocation("normalTransform");
     phongLightPosition = phongShaderProgram.uniformLocation("lightPos");
+    phongTextureColor = phongShaderProgram.uniformLocation("samplerUniform");
 
     // current
     currentLocations = locations;
@@ -223,6 +223,7 @@ void MainView::createShaderProgram()
     currentTransformation = transformation;
     currentNormalTransform = normalTransform;
     currentLightPosition = normalLightPosition;
+    currentTextureColor = normalTextureColor;
 
 }
 
@@ -244,19 +245,30 @@ void MainView::paintGL() {
         default: normalShaderProgram.bind(); break;
     }
 
-    glUniformMatrix4fv(currentProjectionLocation,1,false,projectionMatrix.data());
+
+
 
     QMatrix4x4 transformationMatrix = rotationMatrix * scalingMatrix;
 
-    glUniformMatrix4fv(currentTransformation,1,false,transformationMatrix.data());
-
-    glUniformMatrix3fv(currentNormalTransform,1,false,normalMatrix.data());
 
     // Draw model
-    glUniformMatrix4fv(currentLocations,1,false,modelMatrix.data());
+    glUniformMatrix4fv(currentTransformation,1,false,transformationMatrix.data());
+    glUniformMatrix3fv(currentNormalTransform,1,false, normalMatrix.data());
+    glUniformMatrix4fv(currentProjectionLocation,1,false,projectionMatrix.data());
+    glUniformMatrix4fv(currentLocations,1,false, modelMatrix.data());
+
+
+
     glUniform4fv(currentLightPosition,1,lightPosition);
+
     glBindVertexArray(vaoModel);
-    glDrawArrays(GL_TRIANGLES, 0, modelSize);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex);
+
+    glDrawArrays(GL_TRIANGLES, 0, numverts);
+
+    glUniform1i(currentTextureColor,0);
 
 
     /* OLD CODE FROM PART 1
@@ -276,6 +288,8 @@ void MainView::paintGL() {
     */
 
     normalShaderProgram.release();
+    phongShaderProgram.release();
+    gouraudShaderProgram.release();
 }
 
 /**
@@ -292,7 +306,7 @@ void MainView::resizeGL(int newWidth, int newHeight)
     Q_UNUSED(newWidth)
     Q_UNUSED(newHeight)
     projectionMatrix.setToIdentity();
-    projectionMatrix.perspective(60.0f, newWidth/newHeight, 0.1f, 20.0f);
+    projectionMatrix.perspective(60.0f, (float) newWidth/newHeight, 0.1f, 20.0f);
 }
 
 // --- Public interface
@@ -330,6 +344,7 @@ void MainView::setShadingMode(ShadingMode shading)
             currentProjectionLocation = gouraudProjectionLocation;
             currentTransformation = gouraudTransformation;
             currentLightPosition = gouraudLightPosition;
+            currentTextureColor = gouraudTextureColor;
             break;
         case MainView::PHONG:
             currentShading = MainView::PHONG;
@@ -338,6 +353,8 @@ void MainView::setShadingMode(ShadingMode shading)
             currentProjectionLocation = phongProjectionLocation;
             currentTransformation = phongTransformation;
             currentLightPosition = phongLightPosition;
+            currentTextureColor = phongTextureColor;
+            qDebug() << currentTextureColor;
             break;
         default:
             currentShading = MainView::NORMAL;
@@ -346,6 +363,7 @@ void MainView::setShadingMode(ShadingMode shading)
             currentProjectionLocation = projectionLocation;
             currentTransformation = transformation;
             currentLightPosition = normalLightPosition;
+            currentTextureColor = normalTextureColor;
     }
     update();
 }

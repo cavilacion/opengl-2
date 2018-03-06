@@ -6,6 +6,7 @@
 // Specify the input locations of attributes
 layout (location = 0) in vec3 vertCoordinates_in;
 layout (location = 1) in vec3 vertNormal_in;
+layout (location = 2) in vec2 vertUV_in;
 
 // Specify the Uniforms of the vertex shader
 uniform mat4 modelTransform; //for example
@@ -18,7 +19,8 @@ uniform vec4 lightPos;
 
 // Specify the output of the vertex stage
 out vec3 vertNormal;
-varying vec3 v_Color;
+out vec3 v_Color;
+out vec2 vertUV;
 
 void main()
 {
@@ -32,8 +34,8 @@ void main()
 
 
     vec4 lightPosition = lightPos;//projectionTransform * modelTransform * transformation * lightPos;
-    float distance = length(lightPosition - gl_Position);
-    vec4 lightVector = normalize(lightPosition - gl_Position);
+    float distance = length(lightPosition - vec4(vertCoordinates_in, 1.0));
+    vec4 lightVector = normalize(lightPosition - vec4(vertCoordinates_in, 1.0));
 
     // Calculate the dot product of the light vector and vertex normal. If the normal and light vector are
     // pointing in the same direction then it will get max illumination.
@@ -45,5 +47,6 @@ void main()
     // Multiply the color by the illumination level. It will be interpolated across the triangle.
     vec3 color = vec3(0.7,0.5,0.1);
     v_Color = color * diffuse;
+    vertUV = vertUV_in;
 
 }

@@ -27,20 +27,3 @@ QVector<quint8> MainView::imageToBytes(QImage image) {
     }
     return pixelData;
 }
-
-void MainView::loadTexture(QString file, GLuint *texturePtr){
-    glGenTextures(1, texturePtr);
-    glBindTexture(GL_TEXTURE_2D, *texturePtr);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    QImage im(file);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, im.width(), im.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageToBytes(im).data());
-    //glGenerateMipmap(GL_TEXTURE_2D);
-
-}
