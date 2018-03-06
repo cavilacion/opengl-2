@@ -13,10 +13,11 @@ uniform mat4 projectionTransform;
 uniform mat4 transformation;
 uniform mat3 normalTransform;
 
-uniform vec3 lightPos;
+uniform vec4 lightPos;
 
 // Specify the output of the vertex stage
-out vec3 vertNormal;
+varying vec3 vertNormal;
+varying vec3 lightVector;
 
 void main()
 {
@@ -24,4 +25,12 @@ void main()
     // Currently without any transformation
     gl_Position = projectionTransform * modelTransform * transformation * vec4(vertCoordinates_in, 1.0);
     vertNormal = normalTransform*vertNormal_in;
+
+    lightVector = vec3(normalize(lightPos - gl_Position));
+
+    //v = vec3(gl_ModelViewMatrix * gl_Vertex);
+    //N = normalize(gl_NormalMatrix * gl_Normal);
 }
+
+
+

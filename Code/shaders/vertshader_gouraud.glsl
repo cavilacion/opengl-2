@@ -31,7 +31,7 @@ void main()
     // http://www.learnopengles.com/tag/gouraud-shading/
 
 
-    vec4 lightPosition = projectionTransform * modelTransform * transformation * lightPos;
+    vec4 lightPosition = lightPos;//projectionTransform * modelTransform * transformation * lightPos;
     float distance = length(lightPosition - gl_Position);
     vec4 lightVector = normalize(lightPosition - gl_Position);
 
