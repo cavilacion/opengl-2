@@ -42,6 +42,7 @@ public:
     void setRotation(int rotateX, int rotateY, int rotateZ);
     void setScale(int scale);
     void setShadingMode(ShadingMode shading);
+    QVector<quint8> imageToBytes(QImage image);
 
 protected:
     void initializeGL();
@@ -76,6 +77,7 @@ private:
 
     GLuint vaoModel;
     GLuint bufferId[1];
+    GLuint texture;
 
     // normal
     GLint locations;

@@ -38,6 +38,7 @@ MainView::MainView(QWidget *parent) : QOpenGLWidget(parent) {
 
     modelMatrix.translate(0,-2,-10);
     modelMatrix.scale(10.0f);
+    setShadingMode (MainView::PHONG);
 
     /* OLD CODE FROM PART 1
     // Create Cube
@@ -122,6 +123,9 @@ void MainView::initializeGL() {
 
     glGenBuffers(1, bufferId);
     glGenVertexArrays(1, &vaoModel);
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    //glTexParameteri(GL_TEXTURE_2D, )
     glBindVertexArray(vaoModel);
     glBindBuffer(GL_ARRAY_BUFFER, bufferId[0]);
     glBufferData(GL_ARRAY_BUFFER, modelSize * sizeof(Vertex), modelVertices, GL_STATIC_DRAW);

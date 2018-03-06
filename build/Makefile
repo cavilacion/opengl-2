@@ -52,7 +52,8 @@ SOURCES       = ../Code/main.cpp \
 		../Code/mainwindow.cpp \
 		../Code/mainview.cpp \
 		../Code/user_input.cpp \
-		../Code/model.cpp qrc_resources.cpp \
+		../Code/model.cpp \
+		../Code/utility.cpp qrc_resources.cpp \
 		moc_mainwindow.cpp \
 		moc_mainview.cpp
 OBJECTS       = main.o \
@@ -60,6 +61,7 @@ OBJECTS       = main.o \
 		mainview.o \
 		user_input.o \
 		model.o \
+		utility.o \
 		qrc_resources.o \
 		moc_mainwindow.o \
 		moc_mainview.o
@@ -194,6 +196,7 @@ DIST          = /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		../Code/.qmake.stash \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -218,7 +221,8 @@ DIST          = /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../Code/mainwindow.cpp \
 		../Code/mainview.cpp \
 		../Code/user_input.cpp \
-		../Code/model.cpp
+		../Code/model.cpp \
+		../Code/utility.cpp
 QMAKE_TARGET  = OpenGL_transformations
 DESTDIR       = 
 TARGET        = OpenGL_transformations
@@ -361,6 +365,7 @@ Makefile: ../Code/OpenGL_transformations.pro /home/erik/Qt5.7.0/5.7/gcc_64/mkspe
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -515,6 +520,7 @@ Makefile: ../Code/OpenGL_transformations.pro /home/erik/Qt5.7.0/5.7/gcc_64/mkspe
 /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/qt_config.prf:
 /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf:
 /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/exclusive_builds.prf:
 /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/default_pre.prf:
 /home/erik/Qt5.7.0/5.7/gcc_64/mkspecs/features/resolve_config.prf:
@@ -553,7 +559,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../Code/resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../Code/mainwindow.h ../Code/mainview.h ../Code/model.h ../Code/geometry.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../Code/main.cpp ../Code/mainwindow.cpp ../Code/mainview.cpp ../Code/user_input.cpp ../Code/model.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Code/main.cpp ../Code/mainwindow.cpp ../Code/mainview.cpp ../Code/user_input.cpp ../Code/model.cpp ../Code/utility.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../Code/mainwindow.ui $(DISTDIR)/
 
 
@@ -583,8 +589,12 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: ../Code/resources.qrc \
 		/home/erik/Qt5.7.0/5.7/gcc_64/bin/rcc \
-		../Code/shaders/fragshader.glsl \
-		../Code/shaders/vertshader.glsl \
+		../Code/shaders/fragshader_normal.glsl \
+		../Code/shaders/vertshader_normal.glsl \
+		../Code/shaders/fragshader_gouraud.glsl \
+		../Code/shaders/vertshader_phong.glsl \
+		../Code/shaders/fragshader_phong.glsl \
+		../Code/shaders/vertshader_gouraud.glsl \
 		../Code/models/flat_surface.obj \
 		../Code/models/cube.obj \
 		../Code/models/cat.obj \
@@ -1205,7 +1215,94 @@ mainwindow.o: ../Code/mainwindow.cpp ../Code/mainwindow.h \
 		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
 		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		ui_mainwindow.h
+		ui_mainwindow.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QDial \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdial.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFormLayout \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qformlayout.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLayout \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSlider \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		../Code/mainview.h \
+		../Code/model.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QVector2D \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QVector3D \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector3d.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QKeyEvent \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEvent \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QSurfaceFormat \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLFunctions_3_3_Core \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglfunctions_3_3_core.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLVersionFunctions \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglcontext.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLDebugLogger \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengldebug.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLShaderProgram \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector4d.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix4x4.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qquaternion.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qgenericmatrix.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QTimer \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../Code/geometry.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../Code/mainwindow.cpp
 
 mainview.o: ../Code/mainview.cpp ../Code/mainview.h \
@@ -1558,6 +1655,142 @@ model.o: ../Code/model.cpp ../Code/model.h \
 		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
 		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QTextStream
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o model.o ../Code/model.cpp
+
+utility.o: ../Code/utility.cpp ../Code/mainview.h \
+		../Code/model.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QVector2D \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QVector3D \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector3d.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QKeyEvent \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEvent \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QSurfaceFormat \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLFunctions_3_3_Core \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglfunctions_3_3_core.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLVersionFunctions \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglcontext.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLDebugLogger \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopengldebug.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLShaderProgram \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qvector4d.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix4x4.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qquaternion.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtGui/qgenericmatrix.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/QTimer \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
+		/home/erik/Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../Code/geometry.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o utility.o ../Code/utility.cpp
 
 qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
